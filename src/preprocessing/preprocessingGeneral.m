@@ -27,6 +27,12 @@ if ~isfield(beam,'NRtol')
 end
 
 
+% base vectors
+mesh.E1 = [1 0 0];
+mesh.E2 = [0 1 0];
+mesh.E3 = [0 0 1];
+
+
 
 %% elasticity matrix
 beam.elasMatrix = elasticityMatrix(beam) .* beam.condScFac;

@@ -5,8 +5,6 @@ clc
 % static analysis of GEB examples: a cantilever straight beam subjected to harmonic point load at the free end.
 
 
-
-
 %% INPUT
 
 beam.L = 4;
@@ -16,11 +14,6 @@ beam.GA2 = 5e10;
 beam.EI1 = 200;
 beam.EI2 = 200;
 beam.GIt = 2e10;
-
-% base vectors
-mesh.E1 = [1 0 0];
-mesh.E2 = [0 1 0];
-mesh.E3 = [0 0 1];
 
 % external forces
 beam.Fend = [-10 0 0];                % load amplitude

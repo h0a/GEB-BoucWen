@@ -21,11 +21,6 @@ beam.GIt = 2e10;
 % scaling factor for conditioning
 beam.condScFac = 1e-2;
 
-% base vectors
-mesh.E1 = [1 0 0];
-mesh.E2 = [0 1 0];
-mesh.E3 = [0 0 1];
-
 % external forces
 beam.bodyFext = @(t) [0; 0; 0] .* beam.condScFac;                       % config.-independent body force
 beam.MmaxEnd = [0, 2*beam.EI2 * pi / beam.L * beam.condScFac, 0];       % rollup moments: M = [m1, m2, m3] = m1*d1 + m2*d2 + m3*d3

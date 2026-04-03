@@ -23,11 +23,6 @@ beam.GIt = (2.1/2/1.3*beam.Jeq)*1e7;
 % scaling factor for conditioning
 beam.condScFac = 1e-3;
 
-% base vectors
-mesh.E1 = [1 0 0];
-mesh.E2 = [0 1 0];
-mesh.E3 = [0 0 1];
-
 % external forces
 beam.Fmax = 130e3 * beam.condScFac;
 
