@@ -25,4 +25,5 @@ beam.chi(:,i+1)     = x(mesh.ndofs+mesh.ndofse+mesh.ndofss+1:end);
 % stopping computation in case of non-converging NR solution at the current load step
 if NRiter == beam.maxNumIter
     warning('Newton-Raphson scheme does not converge at load step %.1d.\nComputation stopped.\n', i);
+    beam.NRflag = 1;
 end

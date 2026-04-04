@@ -23,8 +23,8 @@ beam.condScFac = 1e-2;
 
 % external forces
 beam.bodyFext = @(t) [0; 0; 0] .* beam.condScFac;                       % config.-independent body force
-beam.MmaxEnd = [0, 2*beam.EI2 * pi / beam.L * beam.condScFac, 0];       % rollup moments: M = [m1, m2, m3] = m1*d1 + m2*d2 + m3*d3
-%                  m2*(-d2)
+beam.MmaxEnd = [0, 2*beam.EI2 * pi / beam.L * beam.condScFac, 0];       % rollup moments: M = [m1, m2, m3] = m1*d1 + m2*d2 + m3*d3 + m2*(-d2)
+beam.nonlinMend = true;
 
 % number of load steps
 beam.numLoadSteps = 55;
@@ -65,7 +65,7 @@ beam.loadFactors = linspace(1/beam.numLoadSteps,1,beam.numLoadSteps);
 
 %% SOLVING
 
-[beam, mesh] = solveStaticRollUpGEB(beam,mesh);
+[beam, mesh] = solveStaticGEB(beam,mesh);
 
 
 %% POSTPROCESSING

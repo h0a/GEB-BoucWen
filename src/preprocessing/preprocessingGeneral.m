@@ -7,6 +7,15 @@ if ~isfield(beam,'condScFac')
     beam.condScFac = 1.0;
 end
 
+% default flag of follower end force and moment
+if ~isfield(beam,'nonlinFend')
+    beam.nonlinFend = false;
+end
+
+if ~isfield(beam,'nonlinMend')
+    beam.nonlinMend = false;
+end
+
 % default option to compute linearization numerically
 if ~isfield(beam,'computeAnumerically')
     beam.computeAnumerically = false;
@@ -18,6 +27,9 @@ if ~isfield(mesh, 'numGaussPtsPerEle')
 end
 
 % default parameters for the Newton-Raphson scheme
+beam.NRflag = 0;                % flag to stop the computation when the NR scheme does not converge
+                                % 0: converged      1: non-converged
+                                
 if ~isfield(beam,'maxNumIter')
     beam.maxNumIter = 50;       % maximum iteration step
 end

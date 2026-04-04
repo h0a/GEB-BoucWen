@@ -41,7 +41,7 @@ for i = 1:beam.numLoadSteps                     % LOOP OVER LOAD STEPS
     [x,beam,mesh] = NewtonRaphsonScheme(beam,mesh,x,alpha,i);
     
     % stopping computation in case of non-converging NR solution at the current load step
-    if mesh.num_iters(i) == beam.maxNumIter
+    if beam.NRflag == 1
         break;
     end
 end                                             % END LOOP OVER LOAD STEPS

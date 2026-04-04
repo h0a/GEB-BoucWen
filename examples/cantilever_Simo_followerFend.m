@@ -25,6 +25,7 @@ beam.condScFac = 1e-3;
 
 % external forces
 beam.Fmax = 130e3 * beam.condScFac;
+beam.nonlinFend = true;
 
 % number of load steps
 beam.numLoadSteps = 1000;
@@ -57,8 +58,9 @@ beam.dsdtJacobianFunc = @(t) 1;     % function of the jacobian ds/dt
                                     % (if straight beam: s = t and hence ds/dt = @(t) 1)
 
 
-% zero generalized force vector (required for the routine)
-beam.fext = zeros(mesh.ndofs,1);
+% nodal constant external force vectors (point force at each node)
+beam.nodalFext = zeros(3,mesh.numNodes);
+beam.bodyFext = @(t) [0; 0; 0];
 
 % load factors
 beam.loadFactors = linspace(1/beam.numLoadSteps,1,beam.numLoadSteps);
@@ -67,7 +69,7 @@ beam.loadFactors = linspace(1/beam.numLoadSteps,1,beam.numLoadSteps);
 
 %% SOLVING
 
-[beam, mesh] = solveStaticFollowingFendGEB(beam,mesh);
+[beam, mesh] = solveStaticGEB(beam,mesh);
 
 
 
