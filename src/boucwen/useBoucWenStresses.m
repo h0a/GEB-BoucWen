@@ -33,7 +33,9 @@ if ~isfield(beam,'BWNRtol')
 end
 
 % maximal number of iterations for the Uzawa scheme
-beam.maxUzawaIter = 100;
+if ~isfield(beam,'maxUzawaIter')
+    beam.maxUzawaIter = 100;       % maximum iteration step
+end
 
 if ~isfield(beam,'UzawaTol')
     beam.UzawaTol = 1e-6;         % tolerance for the Uzawa scheme
