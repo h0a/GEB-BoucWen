@@ -114,12 +114,37 @@ for i = 1:beam.numLoadSteps                     % LOOP OVER LOAD STEPS
 end                                             % END LOOP OVER LOAD STEPS
 
 
+clear i x1 x2 z1 z2 UzawaIter xPre zPre err NRiter BWiter
+
 
 %% POSTPROCESSING
 
 % rescale stress and chi due to scaling factor for conditioning
 beam.s      = beam.s   ./ beam.condScFac;
 beam.chi    = beam.chi ./ beam.condScFac;
+
+% reshape the interested variable fields and compute sigma(e,z)
+beam.sigma   = zeros(beam.numLoadSteps+1,mesh.nelms,6);
+beam.sh      = zeros(beam.numLoadSteps+1,mesh.nelms,6);
+beam.eh      = zeros(beam.numLoadSteps+1,mesh.nelms,6);
+beam.zh      = zeros(beam.numLoadSteps+1,mesh.nelms,6);
+
+for i = 1:beam.numLoadSteps
+    for j = 1:mesh.nelms
+        ids = (j-1)*6+1:j*6;
+
+        beam.sh(i+1,j,:) = beam.s(ids,i+1);
+        beam.eh(i+1,j,:) = beam.e(ids,i+1);
+        beam.zh(i+1,j,:) = beam.zBW(ids,i+1);
+
+        ee = beam.e(ids,i+1);
+        ze = beam.zBW(ids,i+1);
+        beam.sigma(i+1,j,:) = beam.eleSigmaFunc(ee,ze);
+    end
+end
+
+clear i j ee ze ids
+
 
 % print out max number of iterations
 [ii, id] = max(mesh.num_itersUzawa);
@@ -132,3 +157,5 @@ fprintf('Max number of GEB-NR iterations = %.1d at load step %.1d and %.1d-th Uz
 [maxBWiter, linIdx] = max(mesh.num_iters4z(:));
 [loadStep, UzIter] = ind2sub(size(mesh.num_iters4z), linIdx);
 fprintf('Max number of Bouc-Wen-NR iterations = %.1d at load step %.1d and %.1d-th Uzawa iteration.\n', maxBWiter, loadStep, UzIter);
+
+clear ii id linIdx maxNRiter maxBWiter loadStep UzIter
