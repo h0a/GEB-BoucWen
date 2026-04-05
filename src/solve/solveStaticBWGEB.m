@@ -139,7 +139,7 @@ for i = 1:beam.numLoadSteps
 
         ee = beam.e(ids,i+1);
         ze = beam.zBW(ids,i+1);
-        beam.sigma(i+1,j,:) = beam.eleSigmaFunc(ee,ze);
+        beam.sigma(i+1,j,:) = beam.eleSigmaFunc(ee,ze) ./ beam.condScFac;
     end
 end
 
