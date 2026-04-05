@@ -10,16 +10,16 @@ clc
 
 %% INPUT
 
-beam.L = 4;
-beam.EA = 100;
-beam.GA1 = 5e10;
-beam.GA2 = 5e10;
-beam.EI1 = 200;
-beam.EI2 = 200;
-beam.GIt = 2e10;
+beam.L = 1;
+beam.EA = 10;
+beam.GA1 = 100;
+beam.GA2 = 100;
+beam.EI1 = 10/3;
+beam.EI2 = 10/3;
+beam.GIt = 100;
 
 % external forces
-beam.Fend = [-1 0 0];              % load amplitude
+beam.Fend = [-2 0 0];              % load amplitude
 beam.bodyFext = @(t) [0; 0; 0];     % f(t): parametrized body force function
                                     % (if straight beam: t = arc length s)
                                     % if considering gravity, it goes here.
@@ -29,7 +29,7 @@ beam.BCs = {'clamped', 'free'};     % boundary conditions at the left and right 
 beam.customFixedDofs = {[], []};    % if 'custom': array of local dof number of fixed dofs at the left and right ends
 
 % discretization
-mesh.nelms = 4;
+mesh.nelms = 8;
 
 % parameters to estimate number of time (load) steps and load factors = sin(wF * t)
 beam.loadOmega = pi;        % wF
@@ -37,13 +37,12 @@ beam.Ncycles = 3;           % number of load cycles
 beam.timeStep = 0.01;       % time step
 
 
-
 % parameters alpha and beta for the stress function sigma_i(e,z) of each stress component
 beam.alpha4Sigma = ones(6,1);
 beam.alpha4Sigma(5) = 0.13;   % bending component(s)
 
 beam.beta4Sigma = ones(6,1);
-beam.beta4Sigma(5) = 0.4;
+beam.beta4Sigma(5) = 0.6;
 
 
 % initial conditions of strain components and z of each element
@@ -113,7 +112,7 @@ beam.loadFactors = sin(beam.loadOmega .* beam.ttVec(2:end));
 figure('Color',[0 0 0],'Position',[10 50 1200 600]);
 
 % snapshots
-subplot(2,2,1)
+subplot(2,2,[1,2])
 
 for i = unique([0:80:beam.numLoadSteps,beam.numLoadSteps])    
     [nodalphi0, ~, ~, ~] = deassembleGlobalQ(beam.q(:,i+1), mesh);
@@ -138,7 +137,7 @@ set(gca,'TickLabelInterpreter','latex','FontSize',16)
 clear i nodalphi0
 
 % load function
-subplot(2,2,2)
+subplot(2,2,3)
 plot(beam.ttVec,beam.Fend(1) .* [0,beam.loadFactors],'LineWidth',2)
 
 xlabel('$t$ [s]','Interpreter','latex'); 
@@ -146,24 +145,6 @@ ylabel('$F_{z,end}$ [N]','Interpreter','latex');
 title('Load function $F(t)$ [N]','Interpreter','latex')
 grid on; box on;
 set(gca,'TickLabelInterpreter','latex','FontSize',16)
-
-
-% stress-strain curve of 1 chosen component (of the last element and over
-% load steps)
-compId = 5;        % index of the chosen stress/strain component
-sh = beam.s(compId:6:end,:); sh = sh(end,:);
-eh = beam.e(compId:6:end,:); eh = eh(end,:);
-
-subplot(2,2,3)
-plot(eh,sh,'LineWidth',2)
-xlabel('$e_{i,h}$ [-]','Interpreter','latex'); 
-ylabel('$s_{i,h}$','Interpreter','latex');
-
-grid on; box on;
-title(sprintf('%.1d-th stress-strain component',compId),'Interpreter','latex')
-set(gca,'TickLabelInterpreter','latex','FontSize',16)
-
-clear compId eh sh
 
 
 % tip displacement
@@ -184,6 +165,67 @@ grid on; box on;
 title('Tip displacement','Interpreter','latex')
 set(gca,'TickLabelInterpreter','latex','FontSize',16)
 
-clear i nodalphi0 u3End
+clear i nodalphi0 u3end
 
 
+
+
+% stress, strain, z, and sigma over time/load steps
+% for 1 chosen component and chosen element
+
+compId = 5;        % 1,3,5 index of the chosen stress/strain component
+eleId = 8;
+
+figure('Color',[0 0 0],'Position',[10 50 1200 600]);
+
+subplot(2,2,1)
+plot(beam.eh(:,eleId,compId),beam.sh(:,eleId,compId),'LineWidth',2,'DisplayName','$s_{i,h}$'); 
+hold on
+plot(beam.eh(:,eleId,compId),beam.sigma(:,eleId,compId),'LineWidth',2,'DisplayName','$\sigma_{i,h}$')
+
+xlabel('$e_{i,h}$ [-]','Interpreter','latex'); 
+ylabel('$s_{i,h}$','Interpreter','latex');
+title(sprintf('%.1d-th stress-strain comp. in ele. no.%.1d',compId,eleId),'Interpreter','latex')
+grid on; box on;
+legend('Interpreter','latex');
+set(gca,'TickLabelInterpreter','latex','FontSize',16)
+
+
+
+subplot(2,2,2)
+plot(beam.ttVec,beam.sh(:,eleId,compId),'LineWidth',2,'DisplayName','$s_{i,h}$')
+hold on
+plot(beam.ttVec,beam.sigma(:,eleId,compId),'LineWidth',2,'DisplayName','$\sigma_{i,h}$')
+
+xlabel('$t$ [s]','Interpreter','latex'); 
+ylabel('$s_{i,h}$','Interpreter','latex');
+title(sprintf('%.1d-th stress comp. in ele. no.%.1d',compId,eleId),'Interpreter','latex')
+
+grid on; box on;
+legend('Interpreter','latex');
+set(gca,'TickLabelInterpreter','latex','FontSize',16)
+
+
+
+subplot(2,2,3)
+plot(beam.ttVec,beam.eh(:,eleId,compId),'LineWidth',2)
+grid on; box on;
+
+xlabel('$t$ [s]','Interpreter','latex'); 
+ylabel('$e_{i,h}$','Interpreter','latex');
+title(sprintf('%.1d-th strain comp. in ele. no.%.1d',compId,eleId),'Interpreter','latex')
+set(gca,'TickLabelInterpreter','latex','FontSize',16)
+
+
+
+subplot(2,2,4)
+plot(beam.ttVec,beam.zh(:,eleId,compId),'LineWidth',2)
+grid on; box on;
+
+xlabel('$t$ [s]','Interpreter','latex'); 
+ylabel('$z_{i,h}$','Interpreter','latex');
+title(sprintf('%.1d-th z-comp. in ele. no.%.1d',compId,eleId),'Interpreter','latex')
+set(gca,'TickLabelInterpreter','latex','FontSize',16)
+
+
+clear compId eleId

@@ -7,22 +7,22 @@ clc
 
 %% INPUT
 
-beam.L = 4;
-beam.EA = 100;
-beam.GA1 = 5e10;
-beam.GA2 = 5e10;
-beam.EI1 = 200;
-beam.EI2 = 200;
-beam.GIt = 2e10;
+beam.L = 1;
+beam.EA = 10;
+beam.GA1 = 100;
+beam.GA2 = 100;
+beam.EI1 = 10/3;
+beam.EI2 = 10/3;
+beam.GIt = 100;
 
 % external forces
-beam.Fend = [-10 0 0];                % load amplitude
+beam.Fend = [-2 0 0];               % load amplitude
 beam.bodyFext = @(t) [0; 0; 0];     % f(t): parametrized body force function
                                     % (if straight beam: t = arc length s)
 
 % parameters to estimate number of time (load) steps and load factors = sin(wF * t)
 beam.loadOmega = pi;        % wF
-beam.Ncycles = 3;           % number of load cycles
+beam.Ncycles = 4;           % number of load cycles
 beam.timeStep = 0.01;       % time step
 
 % boundary conditions
@@ -30,7 +30,7 @@ beam.BCs = {'clamped', 'free'};     % boundary conditions at the left and right 
 beam.customFixedDofs = {[], []};    % if 'custom': array of local dof number of fixed dofs at the left and right ends
 
 % discretization
-mesh.nelms = 16;
+mesh.nelms = 8;
 
 
 
