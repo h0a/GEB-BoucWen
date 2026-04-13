@@ -10,16 +10,16 @@ clc
 
 %% INPUT
 
-beam.L = 1;
+beam.L = 0.7;
 beam.EA = 10;
 beam.GA1 = 100;
 beam.GA2 = 100;
 beam.EI1 = 10/3;
-beam.EI2 = 10/3;
+beam.EI2 = 300/0.01;
 beam.GIt = 100;
 
 % external forces
-beam.Fend = [-2 0 0];              % load amplitude
+beam.Fend = [-500 0 0];              % load amplitude
 beam.bodyFext = @(t) [0; 0; 0];     % f(t): parametrized body force function
                                     % (if straight beam: t = arc length s)
                                     % if considering gravity, it goes here.
@@ -33,16 +33,16 @@ mesh.nelms = 8;
 
 % parameters to estimate number of time (load) steps and load factors = sin(wF * t)
 beam.loadOmega = pi;        % wF
-beam.Ncycles = 3;           % number of load cycles
-beam.timeStep = 0.01;       % time step
-
+beam.Ncycles = 2;           % number of load cycles
+beam.timeStep = 0.005;       % time step
+beam.maxUzawaIter = 200;
 
 % parameters alpha and beta for the stress function sigma_i(e,z) of each stress component
 beam.alpha4Sigma = ones(6,1);
 beam.alpha4Sigma(5) = 0.13;   % bending component(s)
 
 beam.beta4Sigma = ones(6,1);
-beam.beta4Sigma(5) = 0.6;
+beam.beta4Sigma(5) = 300;
 
 
 % initial conditions of strain components and z of each element
@@ -57,7 +57,7 @@ beam.BWomega(5) = 0.1;
 beam.BWdata.B1 = 1;
 beam.BWdata.B2 = 0.5;
 beam.BWdata.B3 = 0.5;
-beam.BWdata.B4 = 1/0.12;
+beam.BWdata.B4 = 1/0.01;
 beam.BWdata.Alpha = beam.alpha4Sigma(5);
 beam.BWdata.Rho = 100;
 beam.BWdata.n = 2;
